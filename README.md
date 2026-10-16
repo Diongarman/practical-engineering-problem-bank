@@ -4,7 +4,7 @@ Build practical Python engineering skills through **48 exercises across 12 topic
 
 **Python 3.11+ · 12 starter exercises · 0/48 complete**
 
-This repository is a starting workspace. It contains the curriculum, original exercise briefs, acceptance criteria, and empty implementation/test folders. No exercises have been solved and no acceptance tests have been implemented.
+This repository is a starting workspace. It contains the curriculum, original exercise briefs, acceptance criteria, and implementation/test workspaces. PE01 includes an unfinished class scaffold and baseline tests; the other exercise workspaces remain empty. No exercises have been solved.
 
 ## Navigation
 
@@ -135,7 +135,7 @@ Combine APIs, concurrency, expiry, bounded work, recovery and instrumentation in
 
 ## Exercise order
 
-Difficulty is the curriculum's training estimate. The source platform's rating is listed separately in each exercise brief and the CSV tracker. All exercises currently have status **Not started**, **0 attempts**, and no last-practised date.
+Difficulty is the curriculum's training estimate. The source platform's rating is listed separately in each exercise brief and the CSV tracker. PE01 is **In progress**; all other exercises are **Not started**. Recorded attempts remain **0** with no last-practised dates.
 
 | Order | Exercise | Topic | Difficulty | Starter | Prerequisites |
 | ---: | --- | --- | --- | :---: | --- |
@@ -222,15 +222,15 @@ For each exercise, deliver **Python code, behavioural tests, and a short design 
 │   ├── t01-api-design-and-state-machines/
 │   │   ├── pe01/
 │   │   │   ├── README.md           # Task, checks, tools, and follow-up
-│   │   │   ├── src/.gitkeep        # Empty implementation workspace
-│   │   │   └── tests/.gitkeep      # Empty test workspace
+│   │   │   ├── src/.gitkeep        # PE01 has src/solution.py
+│   │   │   └── tests/.gitkeep      # PE01 has tests/test_solution.py
 │   │   └── ...
 │   └── ...                         # All 12 topics and 48 exercises
 ├── .editorconfig
 └── .gitignore
 ```
 
-See [practice conventions](CONTRIBUTING.md) for file naming, running future tests, and recording progress. No CI workflow is configured yet because there is no exercise code or test suite to run.
+See [practice conventions](CONTRIBUTING.md) for file naming, running future tests, and recording progress. No CI workflow is configured yet. PE01 has baseline tests that intentionally error until its implementation is completed.
 
 ## Sources and scope
 

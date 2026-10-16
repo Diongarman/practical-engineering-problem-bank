@@ -40,4 +40,20 @@ Add invalid-input handling and a thread-safe check-and-decrement. Two workers co
 - `tests/` — add behavioural tests when you begin.
 - `NOTES.md` — create from the [design-note template](../../../docs/design-note-template.md).
 
-Track status and attempts in [problems.csv](../../../data/problems.csv). This workspace starts empty; the acceptance checks above are requirements, not implemented tests.
+Track status and attempts in [problems.csv](../../../data/problems.csv).
+
+## Starting the exercise
+
+Fill in the two methods in [src/solution.py](src/solution.py). Both currently raise `NotImplementedError`; no solution is provided.
+
+The baseline contract uses car types **1 = big, 2 = medium, 3 = small**, capacities from **0 to 1000**, and at most **1000 calls per instance**. A car can only use its matching space type. See the linked original problem statement above.
+
+From this exercise directory, run:
+
+```sh
+PYTHONPATH=src python3 -m unittest discover -s tests -p 'test_*.py' -v
+```
+
+[tests/test_solution.py](tests/test_solution.py) covers the original example, zero/full capacity, exact admission counts, type isolation, interleaved calls, independent instances, and the upper input limits. Assertions require actual booleans and inspect only the public API. Invalid inputs and concurrency belong to the optional follow-up and are not tested here.
+
+The tests are expected to fail with `NotImplementedError` until you complete the methods. Repeated rejection checks verify observable full-lot behaviour; they do not inspect your internal capacity representation.

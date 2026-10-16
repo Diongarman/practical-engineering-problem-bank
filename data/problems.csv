@@ -1,5 +1,5 @@
 Order,ID,Problem,Topic,Difficulty,Status,Practice attempts,Last practised,Starter,Prerequisites,Source,Platform rating,Notes
-1,PE01,1603. Design Parking System,API design and state machines,Easy,Not started,0,,Yes,None,LeetCode,Easy,
+1,PE01,1603. Design Parking System,API design and state machines,Easy,In progress,0,,Yes,None,LeetCode,Easy,
 2,PE02,JSON command adapter for a key-value store,API design and state machines,Easy,Not started,0,,Yes,None,Custom,n.a.,
 3,PE05,FIFO queue with explicit empty behaviour,Queues and backpressure,Easy,Not started,0,,Yes,None,Custom,n.a.,
 4,PE06,622. Design Circular Queue,Queues and backpressure,Medium,Not started,0,,Yes,PE05,LeetCode,Medium,

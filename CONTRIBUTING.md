@@ -4,7 +4,7 @@
 
 Follow the ordered index in the root README and use stable IDs such as `PE01` in notes and commits. Each exercise has its own `src/` and `tests/` folders so implementations can evolve independently.
 
-When beginning an exercise, use `src/solution.py` for a small implementation and `tests/test_solution.py` for its tests. Split files only when useful. The `.gitkeep` files simply preserve empty directories; remove them when adding real files. No solution stubs or tests are supplied.
+When beginning an exercise, use `src/solution.py` for a small implementation and `tests/test_solution.py` for its tests. Split files only when useful. The `.gitkeep` files simply preserve empty directories; remove them when adding real files. PE01 includes an unfinished solution scaffold and baseline tests; the other exercises start empty.
 
 Use the exercise's public contract and acceptance criteria. Add behavioural tests as you implement functionality. Copy `docs/design-note-template.md` into the exercise as `NOTES.md` and fill it in yourself.
 
@@ -23,7 +23,7 @@ $env:PYTHONPATH = 'src'
 python -m unittest discover -s tests -p 'test_*.py' -v
 ```
 
-These commands assume the environment described in the README is active. The initial scaffold contains zero tests; a zero-test run is not evidence that an exercise is complete. There is no repository-wide test runner or CI yet.
+These commands assume the environment described in the README is active. PE01 has baseline tests; untouched exercises contain zero tests. A zero-test run is not evidence that an exercise is complete. There is no repository-wide test runner or CI yet.
 
 ## Tracking practice
 
