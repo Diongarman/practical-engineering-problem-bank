@@ -40,4 +40,20 @@ Expose the same handler through a small CLI or HTTP adapter. Keep transport code
 - `tests/` — add behavioural tests when you begin.
 - `NOTES.md` — create from the [design-note template](../../../docs/design-note-template.md).
 
-Track status and attempts in [problems.csv](../../../data/problems.csv). This workspace starts empty; the acceptance checks above are requirements, not implemented tests.
+Track status and attempts in [problems.csv](../../../data/problems.csv).
+
+## Starting the exercise
+
+Fill in `CommandAdapter.__init__` and `CommandAdapter.handle` in [src/solution.py](src/solution.py). Both currently raise `NotImplementedError`; no solution is provided. Create one adapter instance and call its `handle(command)` method for each command in a sequence.
+
+The scaffold suggests an `op` field for the operation, plus `key` and (for `set`) `value`. This is a suggested command format; the workbook does not prescribe those field names. Document any remaining contract choices in your design note before testing them.
+
+Write your own tests in `tests/test_solution.py`, importing `CommandAdapter` from `solution`. The acceptance checks above are requirements, not implemented tests. See the [test-writing guidance](../../../README.md#writing-your-own-tests).
+
+From this **PE02 folder**, run your tests with:
+
+```sh
+PYTHONPATH=src python3 -m unittest discover -s tests -p 'test_*.py' -v
+```
+
+Until you add tests, this command will discover zero tests; that does not indicate a completed exercise.

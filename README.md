@@ -4,7 +4,7 @@ Build practical Python engineering skills through **48 exercises across 12 topic
 
 **Python 3.11+ · 12 starter exercises · 0/48 complete**
 
-This repository is a starting workspace. It contains the curriculum, original exercise briefs, acceptance criteria, and implementation/test workspaces. PE01 includes an unfinished class scaffold and baseline tests; the other exercise workspaces remain empty. No exercises have been solved.
+This repository is a starting workspace. It contains the curriculum, original exercise briefs, acceptance criteria, and implementation/test workspaces. PE01 includes an unfinished class scaffold and baseline tests. PE02 includes an unfinished command-adapter scaffold for which you write your own tests; the other exercise workspaces remain empty. No exercises have been solved.
 
 ## Navigation
 
