@@ -9,16 +9,18 @@ This repository is a starting workspace. It contains the curriculum, original ex
 ## Navigation
 
 - [Getting started](#getting-started)
+- [Writing your own tests](#writing-your-own-tests)
+- [Finishing an exercise](#finishing-an-exercise)
 - [Topic guide](#topic-guide)
 - [Exercise order](#exercise-order)
 - [Practice method](#practice-method)
-- [Writing your own tests](#writing-your-own-tests)
-- [Finishing an exercise](#finishing-an-exercise)
 - [Difficulty guide](#difficulty-guide)
 - [Repository structure](#repository-structure)
 - [Sources and scope](#sources-and-scope)
 
 ## Getting started
+
+Start in the **repository root**: the `practical-engineering-problem-bank` folder containing this README, `exercises/`, and `data/`.
 
 1. Use Python **3.11 or newer** and optionally create a local environment:
 
@@ -30,10 +32,55 @@ This repository is a starting workspace. It contains the curriculum, original ex
 
 2. Start with **PE01**, then follow the **Order** column below. The first 12 rows are the workbook's starter path. Exercise IDs are stable references, not the recommended execution order.
 3. Open an exercise's linked README for its full task, acceptance checks, suggested Python tools, reference, and optional follow-up. Read its prerequisites first.
-4. When ready to practise, add code under that exercise's `src/` folder and tests under `tests/`. Copy the [design-note template](docs/design-note-template.md) into the exercise as `NOTES.md`.
-5. Update your status, attempts, last-practised date, and notes in [the progress tracker](data/problems.csv). The README's completion count is an initial snapshot, not an automatically updated counter.
+4. Enter the problem folder. For PE01, run this from the repository root:
+
+   ```sh
+   cd exercises/t01-api-design-and-state-machines/pe01
+   ```
+
+   You are now inside the **individual exercise folder**. If already there, skip this command. Use the corresponding path for other exercises.
+5. Add your implementation in `src/solution.py` and your tests in `tests/test_solution.py`. PE01 already has an unfinished class and example tests. Create `NOTES.md` here by copying the shared template once, before you start writing notes:
+
+   ```sh
+   cp ../../../docs/design-note-template.md NOTES.md
+   ```
+
+   Skip the copy if `NOTES.md` already exists so you do not overwrite your notes. In PowerShell, use `Copy-Item ../../../docs/design-note-template.md NOTES.md` instead.
+6. Follow [Writing your own tests](#writing-your-own-tests) as you practise, then use [Finishing an exercise](#finishing-an-exercise) to check and record completion.
 
 The starter repository has no third-party dependencies. Most exercises use the standard library; choose any additional tools when an exercise needs them.
+
+## Writing your own tests
+
+**Writing tests is part of the exercise.** It develops your ability to translate requirements into precise behaviour, recognise edge cases, and catch incorrect assumptions.
+
+1. Read the task and acceptance checks, then list the expected behaviours and boundary cases before coding.
+2. Write a few initial tests in the exercise's `tests/` folder, using filenames such as `test_solution.py` and descriptive test names.
+3. Implement the behaviour in `src/`, running tests frequently and adding cases as you discover them. When fixing a bug, add a test that reproduces it.
+4. Review the suite against every acceptance criterion. Check normal behaviour, relevant boundaries, repeated operations, and failure cases required by the contract. Assert observable results through the public API rather than inspecting private state or reproducing the implementation's logic.
+5. Ask for a review of your tests and implementation if useful. Try writing the initial tests yourself before asking an assistant to identify gaps.
+
+PE01's supplied tests are a worked example of test design. Try listing your own cases before reading the suite, then compare them. For later exercises, write your own initial tests. Keep tests for optional follow-ups separate from the baseline requirements.
+
+## Finishing an exercise
+
+1. **Run the exercise's tests from its problem folder.** If you followed Getting started, you are already there. Use this command during development and again when you finish:
+
+   ```sh
+   PYTHONPATH=src python3 -m unittest discover -s tests -p 'test_*.py' -v
+   ```
+
+   `PYTHONPATH=src` lets your tests import modules such as `solution` from this exercise's `src/` folder. Use your activated Python environment. For PowerShell, run:
+
+   ```powershell
+   $env:PYTHONPATH = 'src'
+   python -m unittest discover -s tests -p 'test_*.py' -v
+   ```
+
+2. **Check the results and coverage.** Confirm that the expected tests ran and the result is `OK`, with no failures or errors. A zero-test run does not count as completion. Make sure every acceptance criterion is covered, and resolve any remaining issues before marking the exercise complete.
+3. **Finish your design note.** Explain the API contracts, state and invariants, complexity, trade-offs, and validation results. A few sentences per relevant section are enough. You should be able to explain your solution; optional follow-ups are not required for baseline completion.
+4. **Record your progress.** Return to the repository root with `cd ../../..` from the problem folder. Update the exercise's Status, Practice attempts, Last practised, and Notes fields in [data/problems.csv](data/problems.csv). The README completion counts and [data/topics.csv](data/topics.csv) do not update automatically; update those summaries manually if you want them to reflect current progress.
+5. **Save and move on.** Review your changes, commit and push the completed work to GitHub, then choose the next exercise in the recommended order. You can ask for a review before marking an exercise complete.
 
 ## Topic guide
 
@@ -197,35 +244,7 @@ Difficulty is the curriculum's training estimate. The source platform's rating i
 3. **Extend.** Add the optional follow-up after the baseline works. A follow-up can be harder than its row rating.
 4. **Rebuild.** For an interview-sized subset, rebuild in 45–60 minutes and reserve time for tests.
 
-For each exercise, deliver **Python code, behavioural tests, and a short design note** covering API contracts, invariants, complexity, and trade-offs. Mark an exercise complete only when its acceptance checks pass and you can explain the solution. Testing starts with the first problem; T11 adds dedicated race reproduction, debugging, and instrumentation practice.
-
-## Writing your own tests
-
-**Writing tests is part of the exercise.** It develops your ability to translate requirements into precise behaviour, recognise edge cases, and catch incorrect assumptions.
-
-1. Read the task and acceptance checks, then list the expected behaviours and boundary cases before coding.
-2. Write a few initial tests in the exercise's `tests/` folder, using filenames such as `test_solution.py` and descriptive test names.
-3. Implement the behaviour in `src/`, running tests frequently and adding cases as you discover them. When fixing a bug, add a test that reproduces it.
-4. Review the suite against every acceptance criterion. Check normal behaviour, relevant boundaries, repeated operations, and failure cases required by the contract. Assert observable results through the public API rather than inspecting private state or reproducing the implementation's logic.
-5. Ask for a review of your tests and implementation if useful. Try writing the initial tests yourself before asking an assistant to identify gaps.
-
-PE01's supplied tests are a worked example of test design. Try listing your own cases before reading the suite, then compare them. For later exercises, write your own initial tests. Keep tests for optional follow-ups separate from the baseline requirements.
-
-## Finishing an exercise
-
-1. **Run the exercise's tests.** For PE01, start in the **repository root** (`practical-engineering-problem-bank`, the folder containing all the exercises) and run:
-
-   ```sh
-   cd exercises/t01-api-design-and-state-machines/pe01
-   PYTHONPATH=src python3 -m unittest discover -s tests -p 'test_*.py' -v
-   ```
-
-   The first command moves into the **individual problem folder**; the second runs its tests there. If you are already in `pe01/`, skip the `cd` command. For another exercise, substitute its folder path. Use your activated Python environment; a PowerShell equivalent is in [practice conventions](CONTRIBUTING.md#running-tests-once-you-have-written-them).
-
-2. **Check the results and coverage.** Confirm that the expected tests ran and the result is `OK`, with no failures or errors. A zero-test run does not count as completion. Make sure every acceptance criterion is covered, and resolve any remaining issues before marking the exercise complete.
-3. **Finish your design note.** If needed, copy [the template](docs/design-note-template.md) into the problem folder as `NOTES.md`. Explain the API contracts, state and invariants, complexity, trade-offs, and validation results. A few sentences per relevant section are enough. You should be able to explain your solution; optional follow-ups are not required for baseline completion.
-4. **Record your progress.** Return to the repository root with `cd ../../..` from the problem folder. Update the exercise's Status, Practice attempts, Last practised, and Notes fields in [data/problems.csv](data/problems.csv). The README completion counts and [data/topics.csv](data/topics.csv) do not update automatically; update those summaries manually if you want them to reflect current progress.
-5. **Save and move on.** Review your changes, commit and push the completed work to GitHub, then choose the next exercise in the recommended order. You can ask for a review before marking an exercise complete.
+For each exercise, deliver **Python code, behavioural tests, and a short design note** covering API contracts, invariants, complexity, and trade-offs. Testing starts with the first problem; T11 adds dedicated race reproduction, debugging, and instrumentation practice.
 
 ## Difficulty guide
 
@@ -252,15 +271,15 @@ PE01's supplied tests are a worked example of test design. Try listing your own 
 │   ├── t01-api-design-and-state-machines/
 │   │   ├── pe01/
 │   │   │   ├── README.md           # Task, checks, tools, and follow-up
-│   │   │   ├── src/.gitkeep        # PE01 has src/solution.py
-│   │   │   └── tests/.gitkeep      # PE01 has tests/test_solution.py
+│   │   │   ├── src/solution.py     # Unfinished class scaffold
+│   │   │   └── tests/test_solution.py # Example baseline tests
 │   │   └── ...
 │   └── ...                         # All 12 topics and 48 exercises
 ├── .editorconfig
 └── .gitignore
 ```
 
-See [practice conventions](CONTRIBUTING.md) for file naming, running future tests, and recording progress. No CI workflow is configured yet. PE01 has baseline tests that intentionally error until its implementation is completed.
+See [repository conventions](CONTRIBUTING.md) for file naming, CSV editing, and housekeeping. No CI workflow is configured yet. PE01 has baseline tests that intentionally error until its implementation is completed.
 
 ## Sources and scope
 

@@ -1,36 +1,23 @@
-# Practice conventions
+# Repository conventions
 
-## Working on an exercise
+For the complete practice workflow and CLI commands, follow the README:
 
-Follow the ordered index in the root README and use stable IDs such as `PE01` in notes and commits. Each exercise has its own `src/` and `tests/` folders so implementations can evolve independently.
+- [Getting started](README.md#getting-started)
+- [Writing your own tests](README.md#writing-your-own-tests)
+- [Finishing an exercise](README.md#finishing-an-exercise)
 
-When beginning an exercise, use `src/solution.py` for a small implementation and `tests/test_solution.py` for its tests. Split files only when useful. The `.gitkeep` files simply preserve empty directories; remove them when adding real files. PE01 includes an unfinished solution scaffold and baseline tests; the other exercises start empty.
+## File conventions
 
-Use the exercise's public contract and acceptance criteria. Add behavioural tests as you implement functionality. Copy `docs/design-note-template.md` into the exercise as `NOTES.md` and fill it in yourself.
+Use stable exercise IDs such as `PE01` in notes and commits. Keep each exercise's implementation and tests in its own folder so exercises can evolve independently.
 
-## Running tests once you have written them
+Use `src/solution.py` and `tests/test_solution.py` for small exercises; split them into more files only when useful. The `.gitkeep` files preserve empty directories in Git and can be removed when real files are added.
 
-From an exercise directory, for standard-library `unittest` tests importing `solution` from `src/`:
+## Editing curriculum data
 
-```sh
-PYTHONPATH=src python -m unittest discover -s tests -p 'test_*.py' -v
-```
+In `data/problems.csv`, keep stable IDs, original order, prerequisites, source, and platform rating intact when updating practice records. Use `YYYY-MM-DD` dates, such as `2026-10-16`. Preserve CSV quoting for fields containing commas or line breaks.
 
-PowerShell equivalent:
+The files in `data/` are local records, not a live connection to Google Drive. See [source details](docs/source.md) for their origin and mapping to the workbook.
 
-```powershell
-$env:PYTHONPATH = 'src'
-python -m unittest discover -s tests -p 'test_*.py' -v
-```
+## Repository housekeeping
 
-These commands assume the environment described in the README is active. PE01 has baseline tests; untouched exercises contain zero tests. A zero-test run is not evidence that an exercise is complete. There is no repository-wide test runner or CI yet.
-
-## Tracking practice
-
-Update `data/problems.csv`: Status, Practice attempts, Last practised, and Notes. Keep stable IDs, original order, prerequisites, source, and platform rating intact. Use dates such as `2026-10-16`. Mark an exercise complete only after its acceptance checks pass and you can explain the implementation.
-
-The topic progress and README completion total are static initial values; update them manually if you want a current summary. CSV fields containing commas or line breaks must remain quoted correctly.
-
-## Scope
-
-Keep optional follow-ups separate from the baseline. Avoid adding dependencies or shared abstractions before an exercise needs them. Do not commit virtual environments, local secrets, bytecode, or generated test output.
+Add dependencies or shared abstractions when an exercise needs them. Keep virtual environments, local secrets, bytecode, and generated test output out of commits. There is no repository-wide test runner or CI workflow configured yet.
