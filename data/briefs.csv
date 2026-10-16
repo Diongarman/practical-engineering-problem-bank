@@ -1,0 +1,196 @@
+ID,Problem,Task and interface,Acceptance checks,Python tools,Optional follow-up,,Reference type,Source or reference URL,Source notes
+PE01,1603. Design Parking System,"Implement ParkingSystem(big, medium, small) and addCar(carType). Track remaining spaces for each type. Return a boolean indicating whether a car was admitted. Follow the original input contract.","1. A type with zero capacity rejects a car.
+2. Admitting a car consumes exactly one matching space.
+3. Repeated calls never make remaining capacity negative.","Classes, list or dict, unittest",Add invalid-input handling and a thread-safe check-and-decrement. Two workers competing for one space must produce one success.,,Problem statement,https://leetcode.com/problems/design-parking-system/,
+PE02,JSON command adapter for a key-value store,"Build handle(command: dict) -> dict around an in-memory store. Support set(key,value), get(key), delete(key). Responses have ok, value and error fields. Missing keys produce a NOT_FOUND error; malformed or unknown operations produce INVALID_COMMAND. A failed command must not change the store.","1. Set, overwrite, read and delete a key.
+2. Missing key and unknown operation return distinct errors.
+3. Malformed commands leave state unchanged.","dict, dataclasses, exceptions, json",Expose the same handler through a small CLI or HTTP adapter. Keep transport code separate from store logic.,,Python reference,https://docs.python.org/3/tutorial/classes.html,
+PE03,1472. Design Browser History,"Implement a one-tab browser history with visit, back and forward. Visits from an older page discard the forward branch. Clamp navigation at the beginning and end.","1. Back/forward beyond the available history stops at its boundary.
+2. A new visit after going back removes forward history.
+3. Navigation returns the current page.","list and cursor, classes, unittest",Generalise the component to an undo/redo command history and document which state belongs in a snapshot.,,Problem statement,https://leetcode.com/problems/design-browser-history/,
+PE04,Job lifecycle manager,"Implement submit(payload), reserve(), complete(job_id), fail(job_id) for a sequential queue. Use pending, reserved, completed and failed states. Reserve returns the oldest pending ID or None. Only reserved jobs can complete or fail. Failure is terminal in this first version.","1. Submitting starts a job as pending.
+2. Completing a pending job is rejected without changing it.
+3. A reserved job reaches one terminal state and never returns from reserve.
+4. Duplicate terminal acknowledgements have no further effect.","Enum, dataclasses, dict, deque",Draw the transition table and add a new cancellation operation with an explicit contract.,,Python reference,https://docs.python.org/3/tutorial/classes.html,
+PE05,FIFO queue with explicit empty behaviour,"Implement put(item), get(), peek() and length for an unbounded FIFO queue using a deque. Let get and peek raise a custom EmptyQueue error when empty. Treat None as a valid item.","1. Items leave in insertion order.
+2. Empty get and peek raise the documented error.
+3. Peeking does not remove an item.
+4. A stored None is distinguishable from an empty queue.","collections.deque, exceptions, unittest",Add a capacity limit that rejects insertion without silently discarding earlier items.,,Python reference,https://docs.python.org/3/library/queue.html,
+PE06,622. Design Circular Queue,"Implement the original fixed-capacity circular queue API using a list and indices. Support enqueue, dequeue, front, rear, full and empty. Do not use a built-in queue to solve the baseline.","1. Capacity one works correctly.
+2. Full enqueue and empty dequeue return failure.
+3. After removals, new entries reuse earlier array positions.
+4. Front and rear remain correct across wraparound.","list, modular arithmetic, invariants",Add a lock around compound operations and test two producers competing for one remaining slot.,,Problem statement,https://leetcode.com/problems/design-circular-queue/,
+PE07,Bounded blocking queue,"Implement put(item, timeout=None) and get(timeout=None) with a positive configurable capacity. Producers wait when full; consumers wait when empty. Use one lock and condition variables. Wait in predicate loops and calculate timeout against a deadline.","1. A full queue blocks a producer until a consumer removes an item.
+2. An empty queue blocks a consumer until insertion.
+3. Timeout raises a documented error and does not consume a slot.
+4. Multiple producers and consumers preserve all submitted items.","threading.Condition, Lock, deque, monotonic",Add close() and specify how waiting callers are released.,,Python reference,https://docs.python.org/3/library/threading.html,
+PE08,Queue shutdown without lost work,"Extend PE07 with close(drain=True). Closing rejects new puts and wakes waiting callers. Consumers drain accepted items, then receive QueueClosed. For drain=False, discard waiting items and report the discarded count. Work already returned to a consumer is outside the buffer.","1. A blocked producer wakes and receives QueueClosed.
+2. Drain mode returns every accepted buffered item once.
+3. Discard mode reports the exact buffered count.
+4. All waiting consumers eventually terminate.","Condition, Event, queue lifecycle, thread joins","Add task_done and join-style unfinished-work accounting, including a documented discard rule.",,Python reference,https://docs.python.org/3/library/queue.html,
+PE09,Bounded key-value cache,"Implement get(key), put(key,value) and delete(key) with FIFO eviction and positive capacity. Missing keys raise KeyError. Reading or updating a key does not move it in FIFO order. Inserting a new key into a full cache evicts the earliest inserted remaining key.","1. Overwriting a key preserves its FIFO position.
+2. Reading a key does not protect it from FIFO eviction.
+3. Capacity one behaves correctly.
+4. Deleting a missing key has a documented outcome.","dict, OrderedDict, exceptions",Separate the eviction policy from value storage so a second policy can be added.,,Python reference,https://docs.python.org/3/library/collections.html,
+PE10,146. LRU Cache,Implement the original get and put API with positive capacity. Accessing or updating a key makes it most recently used. Inserting past capacity evicts the least recently used key. Meet average O(1) operation requirements.,"1. A get changes the next eviction choice.
+2. Updating an existing key does not increase cache size.
+3. Missing keys return the original sentinel.
+4. Capacity one evicts the correct key.",OrderedDict; later dict plus doubly linked list,"Make both get and put thread-safe. Add counters for hits, misses and evictions.",,Problem statement,https://leetcode.com/problems/lru-cache/,
+PE11,981. Time Based Key-Value Store,"Implement set(key,value,timestamp) and get(key,timestamp). A read returns the value with the greatest stored timestamp at or before the requested time. Preserve the original guarantee that set timestamps increase.","1. A query before the first timestamp has no value.
+2. Exact timestamp and between-timestamp queries return correctly.
+3. An unknown key returns the documented missing result.
+4. A query after the latest write returns that latest value.","dict, timestamp/value lists, bisect",Allow concurrent readers and writers. Define how duplicate or out-of-order timestamps are handled.,,Problem statement,https://leetcode.com/problems/time-based-key-value-store/,The original problem guarantees increasing set timestamps. Out-of-order writes are an optional extension.
+PE12,Thread-safe LRU cache with expiry,"Extend PE10 with per-entry TTL and an injected monotonic clock. Expired entries are misses and must not displace valid entries during admission. Synchronise lookup, expiry, recency and eviction. Increment hit/miss/eviction counters once per operation.","1. An entry is expired at now >= deadline.
+2. Expiring an old generation does not delete a later replacement.
+3. Concurrent access never exceeds capacity or corrupts recency.
+4. Counters reconcile with the recorded operations.","Lock, OrderedDict, injected clock, unittest",Compare a full expiry scan with a deadline heap containing versioned entries.,,Python reference,https://docs.python.org/3/library/time.html,
+PE13,933. Number of Recent Calls,Implement RecentCounter.ping(t) for the original inclusive 3000 ms window. Keep only timestamps in the current window and return the number of retained requests. Use the supplied increasing timestamps.,"1. Include a request exactly 3000 ms old.
+2. Remove a request older than the lower boundary.
+3. Every ping counts the newly added request.
+4. Old timestamps do not accumulate indefinitely.","deque, boundary tests, amortised complexity","Make the window configurable. For concurrent use, define clock ordering and protect eviction plus insertion plus counting.",,Problem statement,https://leetcode.com/problems/number-of-recent-calls/,
+PE14,1797. Design Authentication Manager,"Implement token generation, renewal and unexpired-token counting for a configurable TTL. Expiration takes precedence over any operation at the exact deadline. Follow the original strictly increasing currentTime inputs.","1. A token generated at t expires at t + TTL.
+2. Renewal at the expiry time is ignored.
+3. Renewal before expiry extends the deadline.
+4. Missing or expired tokens cannot be renewed.","dict, deadlines, explicit clock values",Replace supplied times with an injected clock and add local concurrent renewal tests.,,Problem statement,https://leetcode.com/problems/design-authentication-manager/,
+PE15,Per-client sliding-window rate limiter,"Implement allow(client_id, now) for a limit N in window W. Retain accepted requests in the interval (now-W, now]. Reject a request if accepting it would exceed N. Rejected calls do not consume quota. Calls use nondecreasing time; protect check-and-record with one lock.","1. Two clients have independent budgets.
+2. A request exactly W old no longer counts.
+3. Repeated rejection does not delay future eligibility.
+4. Two callers competing for the final permit produce one success.","dict of deques, Lock, fake clock",Return retry_after and clean up idle client records without losing active history.,,Python reference,https://docs.python.org/3/library/time.html,
+PE16,Lease manager with renewal and stale tokens,"Implement claim(resource), renew(resource,token), release(resource,token) and expire_due(now). A claim returns a fresh token and deadline or None if occupied. Only a current unexpired token can renew or release. Expiration frees the resource. Renewal extends from the current time.","1. A live lease excludes another claim.
+2. A lease expires at its deadline.
+3. An old token cannot release or renew a newer claim.
+4. Repeated renewal does not let an older heap entry expire the new deadline.","Lock, dict, monotonic clock, uuid, optional heapq",Add maximum total lease duration and explain how renewal interacts with the limit.,,Python reference,https://docs.python.org/3/library/time.html,
+PE17,Thread-safe counter,Implement Counter.increment(amount=1) and Counter.value(). Protect all shared accesses with the same lock. Launch multiple threads against one instance and join them before reading the final value.,"1. Eight threads adding 1000 each produce 8000.
+2. Negative increments follow the documented policy.
+3. Reading does not mutate the counter.
+4. Exceptions do not leave the lock acquired.","threading.Thread, Lock, start, join",Write an explicit lost-update interleaving rather than assuming removing the lock will fail on every run.,,Python reference,https://docs.python.org/3/library/threading.html,
+PE18,1114. Print in Order,"Implement the original three-method coordination problem so first, second and third callbacks run in that order regardless of thread launch order. Use signalling rather than timing assumptions.","1. Launch threads in each of the six permutations.
+2. Every run produces first-second-third callback order.
+3. All threads terminate within the test's join timeout.","threading.Event or semaphores, Thread.join",Extend from a one-shot ordering to a reusable three-stage cycle and define reset behaviour.,,Problem statement,https://leetcode.com/problems/print-in-order/,
+PE19,Exercism Bank Account plus local concurrency tests,"Complete the original Python Bank Account exercise: open, close, read balance, deposit and withdraw, with its required validation errors. Then add local threaded tests and synchronise balance checks, updates and open/closed state.","1. The source's sequential tests pass.
+2. Concurrent deposits reconcile with the expected total.
+3. Competing withdrawals cannot spend the same balance twice.
+4. Operations after closure fail without modifying balance.","Lock, ValueError, unittest, Barrier",Add transfer between two accounts using a stable lock order to avoid deadlock.,,Problem statement,https://exercism.org/tracks/python/exercises/bank-account,Exercism's Python track currently tests sequential operations. Threaded tests here are an explicit local extension.
+PE20,1115. Print FooBar Alternately,"Implement the original two-thread coordination task. One thread prints foo and the other bar, producing n complete alternating pairs without busy waiting.","1. n=1 produces one complete pair.
+2. Starting the bar thread first still produces foo first.
+3. Larger n preserves exact alternation.
+4. Both threads terminate and emit no extra callbacks.","Condition, Semaphore or Event, signalling",Add a stop signal and specify whether stopping can leave an incomplete pair.,,Problem statement,https://leetcode.com/problems/print-foobar-alternately/,
+PE21,Bounded parallel map,"Implement parallel_map(fn, items, max_workers, max_in_flight). Items may be a lazy generator. Return results in input order, allow at most max_in_flight submitted-but-uncollected futures, and represent task exceptions per item without aborting unrelated work.","1. Out-of-order finishes still produce input-ordered results.
+2. An instrumented generator proves the submission bound.
+3. Active functions never exceed max_workers.
+4. A failure in one task does not lose other results.","ThreadPoolExecutor, Future, wait/as_completed",Add fail-fast mode and explain why cancelling a running thread future does not stop its function.,,Python reference,https://docs.python.org/3/library/concurrent.futures.html,
+PE22,Atomic duplicate-work scheduler,"Implement submit(task_id,payload) so repeated submissions with the same ID share one Future. Reject reuse of an ID with different payload. Reserve the ID atomically before scheduling. Keep the ID-to-Future mapping for the scheduler's lifetime.","1. Twenty concurrent identical submissions execute one task.
+2. All callers receive the same result or failure.
+3. Conflicting payload reuse is rejected.
+4. Scheduling failure removes the incomplete registration safely.","Lock, Future, ThreadPoolExecutor, payload fingerprint",Add a retention policy and distinguish deduplicating pending tasks from completed-result caching.,,Python reference,https://docs.python.org/3/library/concurrent.futures.html,
+PE23,Retrying task runner,"Run tasks in a fixed worker pool. Retry declared transient exceptions up to max_attempts including the first attempt. Permanent errors stop immediately. Return a record with task ID, outcome, attempts and last error. Inject backoff waiting so tests need no real delay.","1. Success after two failures records three attempts.
+2. A permanent error is tried once.
+3. Repeated transient failure stops at the attempt budget.
+4. A failed task does not stop other tasks.","ThreadPoolExecutor, exceptions, fake wait, dataclasses",Coordinate delayed retries without keeping a worker occupied during backoff.,,Python reference,https://docs.python.org/3/library/concurrent.futures.html,
+PE24,Dynamic graph crawler with reliable completion,"Crawl a fake URL graph using a worker pool and injected fetch(url). Restrict to the start URL's hostname, atomically deduplicate discovered URLs, cap in-flight work, and record fetch failures. A transient fetch may retry under a fixed budget. Return only when no queued or running work remains.","1. A diamond-shaped graph fetches each successfully visited URL once.
+2. Cycles terminate and other hostnames are skipped.
+3. Children discovered by the last running task are still processed.
+4. Failures do not strand the completion tracker.","ThreadPoolExecutor, Lock, Condition, urllib.parse","Add cancellation and report processed, pending and failed URLs consistently.",,Python reference,https://docs.python.org/3/library/concurrent.futures.html,
+PE25,Async fan-out over fake I/O,"Write async fetch_all(ids, fetch) using an injected asynchronous fetch function. Start independent calls concurrently and return one outcome per input in input order. Preserve failures as explicit outcome records. Use local fake I/O.","1. Completion order can differ from returned order.
+2. One failure does not discard successful results.
+3. Empty input returns immediately.
+4. All created tasks are awaited.","async def, await, asyncio.gather, asyncio.run",Add an asyncio.Semaphore to bound simultaneously active fetches.,,Python reference,https://docs.python.org/3.11/library/asyncio-task.html,
+PE26,Bounded asynchronous processing pipeline,"Connect a lazy producer, a bounded asyncio.Queue and N workers. Process each accepted item, record success or failure, and drain cleanly at end of input. Call task_done in cleanup paths. Keep the producer from enqueueing the entire input at once.","1. Queue occupancy never exceeds capacity.
+2. A failed item does not hang queue.join.
+3. End of input terminates every worker.
+4. No accepted item disappears from the outcome records.","asyncio.Queue, TaskGroup or tasks, task_done/join",Add per-item retry without deadlocking workers that try to refill a full input queue.,,Python reference,https://docs.python.org/3.11/library/asyncio-queue.html,
+PE27,Async deadline and cancellation cleanup,"Implement run_with_deadline(coro, timeout). On expiry, cancel and await the task, release any acquired semaphore permit and close fake resources in finally blocks. Preserve caller cancellation. Test both normal completion and timeout.","1. Timeout produces the documented outcome.
+2. A cancelled worker releases its permit.
+3. External caller cancellation propagates after cleanup.
+4. No task exception is left unobserved.","asyncio.timeout or wait_for, CancelledError, finally",Distinguish the deadline for a whole request from separate deadlines for its stages.,,Python reference,https://docs.python.org/3.11/library/asyncio-task.html,
+PE28,Async single-flight cache,"Implement get_or_load(key, async_loader). Concurrent requests for the same missing key await one shared load. Different keys may load concurrently. Cache successful values only. One caller cancelling its wait must not cancel the shared load for other callers.","1. Twenty callers for one key invoke the loader once.
+2. Loader failure reaches every waiter and allows a later retry.
+3. Cancellation of one waiter does not fail the others.
+4. After completion, no in-flight entry leaks.","asyncio.Lock, Task/Future, shield, dict",Add TTL and define the outcome when a cached value expires during a load.,,Python reference,https://docs.python.org/3.11/library/asyncio-task.html,
+PE29,Exercism Word Count,"Complete the original Python Word Count exercise. Count ASCII words case-insensitively, keep internal apostrophes in contractions, treat numbers as words, and handle punctuation and whitespace separators.","1. Different capitalisation merges into one word count.
+2. Contractions stay intact.
+3. Punctuation and multiple whitespace forms separate words.
+4. Result ordering does not affect correctness.","re, Counter, strings, unittest",Turn the input into chunks and preserve a partial final word between chunks.,,Problem statement,https://exercism.org/tracks/python/exercises/word-count,
+PE30,Incremental UTF-8 line parser,"Implement feed(bytes_chunk) -> list[str] and finish() -> list[str]. Decode UTF-8 incrementally and emit complete newline-delimited records, preserving a partial final line. Choose and document strict invalid-UTF-8 behaviour. Enforce a configurable maximum line length.","1. Splitting a multibyte character across chunks still decodes it.
+2. One-byte chunks and one large chunk yield identical lines.
+3. finish emits a final unterminated line once.
+4. Invalid bytes and oversized lines produce the documented error.","codecs incremental decoder, buffers, generators",Parse JSON Lines and report bad records with line numbers without losing later valid records.,,Python reference,https://docs.python.org/3/library/codecs.html,
+PE31,Ordered results from an out-of-order stream,Build an assembler for results labelled with unique sequence numbers starting at zero. Emit each contiguous ready prefix in order. Buffer later results up to max_buffered; signal backpressure on overflow. finish reports missing sequence numbers instead of silently skipping them.,"1. Arrival order 2,0,1 emits 0, then 1 and 2.
+2. Duplicate sequence numbers are rejected.
+3. Buffer occupancy stays within the configured bound.
+4. End of stream exposes gaps.","dict, generators, bounded buffers",Integrate admission control so the buffer cannot deadlock behind an unscheduled early task.,,Python reference,https://docs.python.org/3/library/collections.html,
+PE32,Incremental streaming tokenizer,Build a UTF-8 byte-stream tokenizer. Define tokens as maximal runs of non-whitespace characters. Emit a token only when its delimiter or end of stream arrives. Retain only decoder state and the partial token. Reject tokens longer than a configurable limit.,"1. Splitting at every byte boundary preserves the token sequence.
+2. Whitespace-only input emits no tokens.
+3. End of stream flushes the last token once.
+4. Memory does not grow with completed input.","codecs, iterators, generators, profiling",Add token timestamps and compare streaming latency with whole-input buffering.,,Python reference,https://docs.python.org/3/library/codecs.html,
+PE33,Idempotent command handler,"Implement execute(request_id,payload,handler) for sequential callers. Remember a successful result under the request ID and a stable payload fingerprint. Return it on identical retries. Reject the same ID with different payload. Failed handlers may be retried and are not recorded as successes.","1. Repeated successful calls execute the handler once.
+2. A conflicting payload is rejected.
+3. A failure followed by a retry invokes the handler again.
+4. Payload dictionaries with reordered keys have the same fingerprint.","dict, json canonicalisation, exceptions",Make registration thread-safe and define whether concurrent duplicate callers wait or receive an in-progress result.,,Python reference,https://docs.python.org/3/tutorial/classes.html,
+PE34,Retry wrapper with backoff,"Implement call_with_retry(fn,max_attempts,base_delay,cap_delay,wait,rng). Retry only TransientError. Delay after failed attempt i by min(cap_delay, base_delay * 2^(i-1)) plus documented bounded jitter. Do not wait after the final failure. Inject wait and randomness.","1. A permanent failure is propagated immediately.
+2. Attempt count includes the initial call.
+3. The delay schedule matches the configured cap.
+4. Seeded randomness makes the test schedule repeatable.","exceptions, random.Random, dependency injection",Add a total deadline that can stop retries before the attempt budget is exhausted.,,Python reference,https://docs.python.org/3/library/time.html,
+PE35,Concurrent circuit breaker,"Wrap an injected dependency with closed, open and half-open states. Consecutive failures open the breaker at a threshold. After a cooldown, admit exactly one probe while other callers fail fast. Probe success closes it; failure reopens it. Keep dependency execution outside the state lock.","1. Calls during cooldown never invoke the dependency.
+2. Only one concurrent half-open probe is admitted.
+3. A successful probe resets failure state.
+4. Failures and timeout policy follow one documented transition table.","Lock, injected clock, exceptions, state machine",Record the state generation so an older in-flight result cannot overwrite a newer breaker state.,,Python reference,https://docs.python.org/3/library/threading.html,
+PE36,Robust work queue with retries and dead letters,"Implement submit, reserve, complete(job_id,token), fail(job_id,token) and dead_letters. Reservations expire after a configurable timeout. Count attempts on reservation; max_retries counts retries after the first. Atomically transition state and reject expired or stale tokens. Capacity counts pending plus reserved work.","1. Multiple workers receive at most one valid reservation for a job.
+2. Timeout and explicit failure consume the same attempt budget.
+3. A completed job is never reserved again.
+4. A late acknowledgement cannot affect a newer reservation.
+5. Final failure or timeout moves the job to the dead-letter collection once.","Lock, deque, dict, monotonic, uuid, dataclasses",Add delayed backoff and explain how duplicate task side effects are handled.,,Python reference,https://docs.python.org/3/library/queue.html,Original expanded exercise based on the work-queue prompt supplied in this conversation.
+PE37,Recover a JSON Lines event log,"Write append_event(event) and recover(path) for a single-writer JSON Lines log. Require each complete event to end in a newline. Replay complete valid events. Ignore an incomplete trailing fragment caused by interruption, but raise an error for a malformed complete record.","1. A complete log round-trips its events.
+2. An incomplete final fragment is not replayed.
+3. Malformed data in the middle is reported with its record number.
+4. A missing file has a documented empty-log outcome.","json, pathlib, text/bytes I/O",Reconstruct a key-value store by replaying set and delete events.,,Python reference,https://docs.python.org/3/library/json.html,
+PE38,Atomic file checkpoint,"Implement save_snapshot(state,path) and load_snapshot(path). Write a temporary file in the destination directory, then replace the destination after serialization succeeds. Inject failures before replacement. Support one writer and describe the scope of crash guarantees.","1. Serialization failure leaves the previous snapshot intact.
+2. Restart after replacement loads the complete new state.
+3. Failure before replacement loads the old state.
+4. Temporary files are cleaned up after handled failures.","tempfile, json, os.replace, pathlib",Investigate flush/fsync and directory syncing for stronger power-loss durability.,,Python reference,https://docs.python.org/3/library/os.html,
+PE39,Transactional idempotent ledger,"Use SQLite to implement credit(account_id,request_id,amount). Create account balances and uniquely keyed successful-operation records. Balance change and receipt insertion occur in one transaction. Identical retries return the saved receipt; conflicting reuse of a request ID is rejected.","1. Identical retries change the balance once.
+2. Injected failure before commit changes neither balance nor receipt.
+3. A conflicting amount under the same request ID is rejected.
+4. Restart preserves balances and successful receipts.","sqlite3, transactions, UNIQUE constraints, context managers",Add concurrent writers using separate connections and define bounded handling of busy/locked errors.,,Python reference,https://docs.python.org/3/library/sqlite3.html,
+PE40,Durable queue recovery,"Persist PE36's jobs and transitions in SQLite. Claims and acknowledgements use transactions. Store deadlines in an explicitly defined restart-stable time domain. Simulate a restart while jobs are pending, reserved, completed and dead-lettered. Resume expired reserved work within its remaining budget.","1. Completed jobs never reappear after restart.
+2. Attempt counts survive interruption.
+3. Expired reservations recover or dead-letter correctly.
+4. An old token cannot acknowledge a recovered claim.
+5. A failed transaction leaves no partial state transition.","sqlite3, transactional updates, clocks, fault injection",Allow two worker processes to claim work atomically and discuss clock assumptions.,,Python reference,https://docs.python.org/3/library/sqlite3.html,
+PE41,Tests from a state-transition table,"Write a test suite for PE04 from its public contract. List each legal transition and each rejected operation before coding tests. Include unknown IDs, repeated acknowledgements, empty reserve and terminal-state behaviour. Add one deliberate defect and show the suite detects it.","1. Every legal transition has an observable-behaviour test.
+2. Rejected operations preserve prior state.
+3. At least one realistic inserted defect is caught.
+4. Tests avoid inspecting private containers to mirror implementation.","unittest, subTest, transition tables",Generate operation sequences and compare outcomes with a small reference state model.,,Python reference,https://docs.python.org/3/library/unittest.html,
+PE42,Deterministic race reproduction,"Create a deliberately broken single-resource claim: read availability, then update it without a lock. Add a test-only hook after the read and use a Barrier to force two readers through it before either updates. Demonstrate duplicate claims, then fix the component and add a one-winner regression test.","1. The arranged broken interleaving produces two successful claims.
+2. The fixed version admits one valid claim.
+3. The fixed test never waits at a barrier while holding the claim lock.
+4. Tests use bounded joins and no sleep-based correctness assertion.","Barrier, Event, Lock, unittest.mock",Apply the same method to a duplicate-work scheduler or stale reservation acknowledgement.,,Python reference,https://docs.python.org/3/library/threading.html,
+PE43,Instrument a worker pool,"Add structured lifecycle logs and a metrics snapshot to PE21 or PE23. Track submitted, running, succeeded and failed tasks, queue wait, and processing duration. Each record has task ID, event and time. Do not log full payloads by default. Keep counter updates thread-safe.","1. Terminal counts reconcile with accepted tasks.
+2. Running returns to zero after completion or failure.
+3. Wait time and processing duration are separate.
+4. Logs can be parsed as JSON and related to one task.","logging, json, monotonic, Lock, metrics snapshots",Add latency histograms and explain why an average alone can hide slow requests.,,Python reference,https://docs.python.org/3/library/logging.html,
+PE44,Diagnose a serialised worker pool,"Investigate this worker shape: with lock: result = fake_fetch(item); results.append(result). fake_fetch is blocking I/O. Reproduce the bottleneck, explain the lock scope, move I/O outside the lock, and bound future submission so a lazy input is not eagerly exhausted.","1. A fixture demonstrates that the original serialises fake I/O.
+2. The repair permits overlapping calls without exceeding worker limits.
+3. Result updates remain safe.
+4. Submission remains bounded and task errors are visible.
+5. The report separates correctness evidence from timing observations.","ThreadPoolExecutor, cProfile, logging, Event/Barrier",Diagnose a blocking function inside async code and replace it with appropriate nonblocking I/O or to_thread.,,Python reference,https://docs.python.org/3/library/concurrent.futures.html,
+PE45,Reservation service with an HTTP adapter,"Build a local seat-reservation service with reserve, confirm, cancel and status endpoints. Use expiring holds with reservation tokens and idempotent request IDs. Keep allocation logic separate from HTTP parsing. Run competing requests locally and return consistent error responses.","1. Competing requests cannot hold the same seat.
+2. Confirmation after expiry is rejected.
+3. Duplicate requests return the same reservation outcome.
+4. Cancelling a confirmed booking follows a documented policy.
+5. Invalid JSON and unknown IDs produce stable API errors.","http.server or familiar framework, Lock, lease manager, JSON",Choose shared storage for two API processes and describe the necessary atomic claim operation.,,Python reference,https://docs.python.org/3/library/http.server.html,
+PE46,Configurable loading cache,"Build a cache with FIFO or LRU policy selected at construction, TTL, thread-safe get_or_load and single-flight loading for each missing key. Invoke loaders outside the global state lock. Expose hit, miss, load and eviction metrics. Define how capacity applies to cached versus in-flight entries.","1. Different policies produce their documented eviction choices.
+2. Twenty concurrent misses for one key trigger one load.
+3. A slow load for one key does not block hits for another.
+4. Loader failure is visible to all waiters and does not poison future loads.
+5. Expired generations cannot remove newer values.","Lock, Future, OrderedDict, injected clock, logging",Compare cache-policy hit rates on the same reproducible access trace.,,Python reference,https://docs.python.org/3/library/collections.html,
+PE47,Streaming inference request batcher,"Build an async request batcher around an injected fake model. Each request has an ID and a Future. Flush when max_batch_size is reached or max_wait expires from the first waiting request. Bound pending work. Preserve per-request results, cancellation and clean shutdown without using a real model or GPU.","1. A full batch flushes before the wait deadline.
+2. A partial batch flushes when its deadline arrives.
+3. Cancelled queued requests are not sent to the model.
+4. A failed model call resolves every affected Future with an error.
+5. Shutdown drains or cancels pending work according to one policy.","asyncio.Queue, Future, timeout, fake model, metrics",Measure throughput versus waiting latency under different batch sizes using a repeatable simulated workload.,,Python reference,https://docs.python.org/3.11/library/asyncio-task.html,
+PE48,Recoverable streaming processing pipeline,"Combine an incremental JSON Lines reader, a bounded queue, worker pool, retry budget, dead-letter records, durable receipts and structured logs. Inject the processing function and storage failures. Support a clean stop and a simulated restart. Use idempotent task IDs to deduplicate successful effects.","1. Chunked input produces the same records as whole input.
+2. Queue and in-flight work remain within stated bounds.
+3. One bad record or task does not silently lose other accepted work.
+4. Permanent failures produce inspectable dead-letter records.
+5. Restart does not repeat a committed idempotent effect.","codecs, queue, ThreadPoolExecutor, sqlite3, logging",Provide a CLI and a benchmark report that identifies the next bottleneck.,,Python reference,https://docs.python.org/3/library/concurrent.futures.html,

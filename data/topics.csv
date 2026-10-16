@@ -1,0 +1,13 @@
+Topic,Name,Core ideas,Python tools,Start with,Problems,Complete,Progress
+T01,API design and state machines,"Classes, method contracts, validation, errors, encapsulation, valid transitions and invariants.","dataclasses, enum, typing, exceptions",PE01,4,0,0
+T02,Queues and backpressure,"FIFO buffers, capacity, ring buffers, producer-consumer coordination, blocking and graceful shutdown.","collections.deque, queue.Queue, threading.Condition",PE05,4,0,0
+T03,Caches and key-value stores,"Lookup, ordering, eviction, versioned reads, compound updates and separating cache policy from storage.","dict, OrderedDict, bisect, linked lists",PE09,4,0,0
+T04,"Time, expiry and rate limits","Clock injection, deadlines, TTL, time windows, leases, renewal and exact boundary behaviour.","time.monotonic, deque, heapq, callable clocks",PE13,4,0,0
+T05,Thread safety and coordination,"Shared memory, interleavings, critical sections, mutual exclusion, signalling, lock scope and deadlocks.","threading.Lock, Event, Condition, Barrier",PE17,4,0,0
+T06,Worker pools and scheduling,"Futures, bounded in-flight work, dynamic tasks, deduplication, result collection and worker lifecycle.","ThreadPoolExecutor, Future, as_completed, queue",PE21,4,0,0
+T07,Async I/O and cancellation,"Coroutines, tasks, await points, event-loop blocking, bounded concurrency, deadlines and cleanup.","asyncio.gather, TaskGroup, Queue, Semaphore, timeout",PE25,4,0,0
+T08,Streaming and incremental parsing,"Chunk boundaries, incremental decoding, partial records, ordering, finite buffers and end-of-stream handling.","iterators, generators, codecs, re, Counter",PE29,4,0,0
+T09,Retries and failure handling,"Transient versus permanent failures, attempt budgets, backoff, idempotency, circuit breakers and dead letters.","exceptions, injected clocks, random.Random, logging",PE33,4,0,0
+T10,Persistence and recovery,"Serialization, atomic file replacement, transaction boundaries, uniqueness constraints and restart recovery.","json, pathlib, tempfile, os.replace, sqlite3",PE37,4,0,0
+T11,"Testing, debugging and observability","Behavioural tests, fake dependencies, forced interleavings, fault injection, profiling, metrics and structured logs.","unittest, unittest.mock, Barrier, logging, cProfile",PE41,4,0,0
+T12,Integrated service exercises,"Combine APIs, concurrency, expiry, bounded work, recovery and instrumentation in a small running service.",http.server or familiar framework; tools from T01-T11,PE45,4,0,0
