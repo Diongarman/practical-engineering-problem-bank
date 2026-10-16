@@ -7,13 +7,14 @@ class CommandAdapter:
     Use one instance for a sequence of commands. Separate instances should
     have independent stores.
 
-    Suggested command format (a scaffold convention, not a workbook rule):
+    Command format (defined in this exercise's README):
         {"op": "set", "key": "example", "value": 42}
         {"op": "get", "key": "example"}
         {"op": "delete", "key": "example"}
 
-    Document your choices for valid keys/values, extra fields, and the
-    response value of successful set/delete operations in NOTES.md.
+    Keys are non-empty strings. Reject missing or extra command fields.
+    Supplied values are assumed JSON-compatible; None is a valid value.
+    See README.md for the full contract and ordered input/output examples.
     """
 
     def __init__(self) -> None:
@@ -24,7 +25,10 @@ class CommandAdapter:
     def handle(self, command: dict) -> dict:
         """Process a set, get, or delete command.
 
-        Every response must contain ok, value, and error fields.
+        Every response must contain exactly ok, value, and error fields.
+        Success uses ok=True and error=None. Successful get returns the
+        stored value; successful set/delete return value=None.
+        Failure uses ok=False and value=None, with an error code below.
         Missing keys produce NOT_FOUND; malformed or unknown operations
         produce INVALID_COMMAND. Failed commands must leave state unchanged.
         """
